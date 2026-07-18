@@ -1,10 +1,9 @@
-import { Hono } from 'hono'
-import { CONSTANT } from '@repo/constants'
+import { Hono } from "hono"
 
 const app = new Hono()
 
-app.get('/', (c) => {
-  return c.text(CONSTANT)
+app.get("/", (c) => {
+    return c.text("Hello from your Hono API!")
 })
 
 export default app
