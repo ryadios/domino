@@ -3,13 +3,20 @@
     "type": "module",
     "scripts": {
         "build": "tsc",
-        "dev": "srvx"
+        "dev": "srvx",
+        "db:generate": "drizzle-kit generate",
+        "db:migrate": "drizzle-kit migrate"
     },
     "dependencies": {
+        "@neondatabase/serverless": "^1.1.0",
+        "better-auth": "^1.6.23",
+        "dotenv": "^17.4.2",
+        "drizzle-orm": "^0.45.2",
         "hono": "^4.8.10"
     },
     "devDependencies": {
         "@types/node": "^20.11.17",
+        "drizzle-kit": "^0.31.10",
         "srvx": "^0.8.7",
         "typescript": "^5.8.3"
     }
