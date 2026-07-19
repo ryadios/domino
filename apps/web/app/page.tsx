@@ -14,7 +14,7 @@ export default function Page() {
                 <div className="w-full max-w-md space-y-6">
                     <a
                         href="/"
-                        className="inline-flex items-center gap-1 text-sm text-muted-foreground"
+                        className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >
                         <HugeiconsIcon icon={ArrowLeft01Icon} size={16} />
                         Home
@@ -71,7 +71,8 @@ export default function Page() {
                                     icon={EyeIcon}
                                     size={20}
                                     strokeWidth={1.5}
-                                    className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-muted-foreground"
+                                    aria-hidden="true"
+                                    className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer text-muted-foreground transition-colors hover:text-foreground"
                                 />
                             </span>
                         </label>
@@ -95,8 +96,8 @@ export default function Page() {
                         <Image
                             src="/google.svg"
                             alt=""
-                            width={20}
-                            height={20}
+                            width={17}
+                            height={17}
                         />
                         Continue with Google
                     </Button>
