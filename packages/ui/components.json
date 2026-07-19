@@ -1,0 +1,21 @@
+{
+    "$schema": "https://ui.shadcn.com/schema.json",
+    "style": "base-nova",
+    "rsc": true,
+    "tsx": true,
+    "tailwind": {
+        "config": "",
+        "css": "src/styles/globals.css",
+        "baseColor": "neutral",
+        "cssVariables": true,
+        "prefix": ""
+    },
+    "aliases": {
+        "components": "@domino/ui/components",
+        "utils": "@domino/ui/lib/utils",
+        "ui": "@domino/ui/components",
+        "lib": "@domino/ui/lib",
+        "hooks": "@domino/ui/hooks"
+    },
+    "iconLibrary": "hugeicons"
+}
