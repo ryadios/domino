@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
-import { db } from "./db"
+import { openAPI } from "better-auth/plugins"
+import { db } from "../db"
 import { env } from "./env"
 
 export const auth = betterAuth({
@@ -12,4 +13,5 @@ export const auth = betterAuth({
         ...(env.GOOGLE && { google: env.GOOGLE }),
     },
     trustedOrigins: [env.CORS_ORIGIN],
+    plugins: [openAPI({ disableDefaultReference: true })],
 })
