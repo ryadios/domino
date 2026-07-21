@@ -1,12 +1,12 @@
 import { headers } from "next/headers"
 
 type Session = {
-    user: { id: string; name: string; email: string }
+    user: { id: string; name: string; email: string; emailVerified: boolean }
 }
 
 export async function getServerSession() {
-    const baseURL = process.env.NEXT_PUBLIC_API_URL
-    if (!baseURL) throw new Error("NEXT_PUBLIC_API_URL is required")
+    const baseURL = process.env.API_URL
+    if (!baseURL) throw new Error("API_URL is required")
 
     try {
         const cookie = (await headers()).get("cookie") ?? ""
