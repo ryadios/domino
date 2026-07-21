@@ -1,9 +1,11 @@
 import { ArrowLeft01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import * as motion from "motion/react-client"
 import Image from "next/image"
 import Link from "next/link"
 import type { ReactNode } from "react"
-import { GoogleSignInButton } from "./google-sign-in-button"
+import { easeOut } from "@/lib/motion"
+import { GoogleAuthButton } from "./google-auth-button"
 
 type AuthLayoutProps = {
     title: string
@@ -12,6 +14,7 @@ type AuthLayoutProps = {
     alternateText: string
     alternateHref: string
     alternateLabel: string
+    oauthError?: string | null
     children: ReactNode
 }
 
@@ -22,12 +25,18 @@ export function AuthLayout({
     alternateText,
     alternateHref,
     alternateLabel,
+    oauthError,
     children,
 }: AuthLayoutProps) {
     return (
         <main className="grid min-h-svh bg-background text-foreground md:grid-cols-2">
             <section className="flex items-center justify-center px-8 py-12">
-                <div className="auth-copy w-full max-w-md space-y-6">
+                <motion.div
+                    initial={{ opacity: 0, transform: "translateY(8px)" }}
+                    animate={{ opacity: 1, transform: "translateY(0px)" }}
+                    transition={{ duration: 0.28, ease: easeOut }}
+                    className="w-full max-w-md space-y-6"
+                >
                     <Link
                         href="/"
                         className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -51,7 +60,7 @@ export function AuthLayout({
                         <span className="h-px flex-1 bg-border" />
                     </div>
 
-                    <GoogleSignInButton />
+                    <GoogleAuthButton callbackError={oauthError} />
 
                     <p className="text-center text-sm text-muted-foreground">
                         {alternateText}{" "}
@@ -62,11 +71,16 @@ export function AuthLayout({
                             {alternateLabel}
                         </Link>
                     </p>
-                </div>
+                </motion.div>
             </section>
 
             <section className="relative hidden min-h-svh p-4 md:block">
-                <div className="auth-artwork absolute inset-4 overflow-hidden rounded-3xl">
+                <motion.div
+                    initial={{ opacity: 0, transform: "scale(0.985)" }}
+                    animate={{ opacity: 1, transform: "scale(1)" }}
+                    transition={{ duration: 0.3, delay: 0.06, ease: easeOut }}
+                    className="absolute inset-4 overflow-hidden rounded-3xl"
+                >
                     <Image
                         src={imageSrc}
                         alt=""
@@ -74,7 +88,7 @@ export function AuthLayout({
                         sizes="50vw"
                         className="object-cover"
                     />
-                </div>
+                </motion.div>
             </section>
         </main>
     )

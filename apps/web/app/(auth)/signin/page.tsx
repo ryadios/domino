@@ -1,7 +1,14 @@
-import { AuthLayout } from "@/features/auth/auth-layout"
-import { SignInForm } from "@/features/auth/sign-in-form"
+import { AuthLayout } from "@/features/auth/components/auth-layout"
+import { SignInForm } from "@/features/auth/components/sign-in-form"
+import { getOAuthErrorMessage } from "@/features/auth/lib/errors"
 
-export default function SignInPage() {
+type SignInPageProps = {
+    searchParams: Promise<{ error?: string | string[] }>
+}
+
+export default async function SignInPage({ searchParams }: SignInPageProps) {
+    const oauthError = getOAuthErrorMessage((await searchParams).error)
+
     return (
         <AuthLayout
             title="Welcome Back"
@@ -10,6 +17,7 @@ export default function SignInPage() {
             alternateText="Don’t have an account yet?"
             alternateHref="/signup"
             alternateLabel="Create Account"
+            oauthError={oauthError}
         >
             <SignInForm />
         </AuthLayout>
