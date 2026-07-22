@@ -3,6 +3,7 @@
 import { Button } from "@domino/ui/components/button"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
+import { useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { authClient } from "@/lib/auth-client"
@@ -18,6 +19,7 @@ type SignInFormProps = {
 
 export function SignInForm({ onVerificationRequired }: SignInFormProps) {
     const router = useRouter()
+    const [isNavigating, startNavigation] = useTransition()
     const { formRef, nudgeInvalidFields } = useInvalidFieldNudge<SignInValues>()
     const {
         formState: { errors, isSubmitting },
@@ -31,11 +33,7 @@ export function SignInForm({ onVerificationRequired }: SignInFormProps) {
     })
     const submit = handleSubmit(async (values) => {
         try {
-            const result = await authClient.signIn.email({
-                ...values,
-                callbackURL: new URL("/verify-email", window.location.origin)
-                    .href,
-            })
+            const result = await authClient.signIn.email(values)
 
             if (result.error) {
                 if (result.error.code === "EMAIL_NOT_VERIFIED") {
@@ -49,8 +47,7 @@ export function SignInForm({ onVerificationRequired }: SignInFormProps) {
                 return
             }
 
-            router.replace("/")
-            router.refresh()
+            startNavigation(() => router.replace("/"))
         } catch {
             toast.error(
                 "Unable to sign in. Check your credentials and try again.",
@@ -58,11 +55,13 @@ export function SignInForm({ onVerificationRequired }: SignInFormProps) {
         }
     }, nudgeInvalidFields)
 
+    const isPending = isSubmitting || isNavigating
+
     return (
         <form
             ref={formRef}
             className="space-y-4"
-            aria-busy={isSubmitting}
+            aria-busy={isPending}
             noValidate
             onSubmit={submit}
         >
@@ -86,11 +85,11 @@ export function SignInForm({ onVerificationRequired }: SignInFormProps) {
 
             <Button
                 type="submit"
-                disabled={isSubmitting}
-                aria-busy={isSubmitting}
+                disabled={isPending}
+                aria-busy={isPending}
                 className="h-12 w-full"
             >
-                <AuthButtonIcon isPending={isSubmitting} />
+                <AuthButtonIcon isPending={isPending} />
                 Sign In
             </Button>
         </form>

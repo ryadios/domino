@@ -42,11 +42,12 @@ export function GoogleAuthButton({
                     .href,
             })
 
-            if (result.error)
+            if (result.error) {
                 toast.error("Unable to sign in with google. Please try again.")
+                setIsPending(false)
+            }
         } catch {
             toast.error("Unable to sign in with google. Please try again.")
-        } finally {
             setIsPending(false)
         }
     }

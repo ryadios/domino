@@ -2,34 +2,36 @@
 
 import { Button } from "@domino/ui/components/button"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { toast } from "sonner"
 import { authClient } from "@/lib/auth-client"
 import { AuthButtonIcon } from "./auth-button-icon"
 
 export function SignOutButton() {
     const router = useRouter()
-    const [isPending, setIsPending] = useState(false)
+    const [isSigningOut, setIsSigningOut] = useState(false)
+    const [isRefreshing, startRefresh] = useTransition()
 
     async function handleSignOut() {
-        setIsPending(true)
+        setIsSigningOut(true)
 
         try {
             const result = await authClient.signOut()
 
             if (result.error) {
                 toast.error("Unable to sign out. Please try again.")
+                setIsSigningOut(false)
                 return
             }
 
-            router.replace("/")
-            router.refresh()
+            startRefresh(() => router.refresh())
         } catch {
             toast.error("Unable to sign out. Please try again.")
-        } finally {
-            setIsPending(false)
+            setIsSigningOut(false)
         }
     }
+
+    const isPending = isSigningOut || isRefreshing
 
     return (
         <Button
