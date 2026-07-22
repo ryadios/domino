@@ -4,7 +4,7 @@
     "scripts": {
         "build": "tsc",
         "clean": "rm -rf dist",
-        "dev": "bunx --bun srvx",
+        "dev": "bun --watch src/dev.ts",
         "db:generate": "drizzle-kit generate",
         "db:migrate": "drizzle-kit migrate"
     },
@@ -16,10 +16,12 @@
         "dotenv": "^17.4.2",
         "drizzle-orm": "^0.45.2",
         "hono": "^4.12.31",
+        "nodemailer": "^9.0.3",
         "zod": "^4.4.3"
     },
     "devDependencies": {
         "@types/node": "^20.11.17",
+        "@types/nodemailer": "^8.0.1",
         "drizzle-kit": "^0.31.10",
         "srvx": "^0.8.7",
         "typescript": "^5.8.3"

@@ -14,21 +14,21 @@ export const auth = betterAuth({
         requireEmailVerification: true,
     },
     emailVerification: {
-        sendOnSignUp: true,
+        sendOnSignUp: false,
         sendOnSignIn: false,
         autoSignInAfterVerification: true,
         expiresIn: 3600,
         async sendVerificationEmail({ user, url }) {
-            await sendVerificationEmail(
-                { to: user.email, url },
-                { apiKey: env.RESEND_API_KEY, from: env.EMAIL_FROM },
-            )
+            await sendVerificationEmail({ to: user.email, url })
         },
     },
-    rateLimit: { storage: "database" },
+    rateLimit: {
+        storage: "database",
+        customRules: { "/get-session": false },
+    },
     socialProviders: {
         ...(env.GITHUB && { github: env.GITHUB }),
-        ...(env.GOOGLE && { google: env.GOOGLE }),
+        google: env.GOOGLE,
     },
     trustedOrigins: [env.CORS_ORIGIN],
     plugins: [openAPI({ disableDefaultReference: true })],

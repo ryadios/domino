@@ -20,8 +20,11 @@ export const env = {
     BETTER_AUTH_SECRET: required("BETTER_AUTH_SECRET"),
     BETTER_AUTH_URL: required("BETTER_AUTH_URL"),
     CORS_ORIGIN: process.env.CORS_ORIGIN ?? "http://localhost:3001",
-    RESEND_API_KEY: required("RESEND_API_KEY"),
-    EMAIL_FROM: required("EMAIL_FROM"),
+    GMAIL_USER: required("GMAIL_USER"),
+    GMAIL_APP_PASSWORD: required("GMAIL_APP_PASSWORD"),
     GITHUB: credentials("GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET"),
-    GOOGLE: credentials("GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET"),
+    GOOGLE: {
+        clientId: required("GOOGLE_CLIENT_ID"),
+        clientSecret: required("GOOGLE_CLIENT_SECRET"),
+    },
 }
