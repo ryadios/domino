@@ -1,11 +1,16 @@
 import { z } from "zod"
 
-export const signInSchema = z.object({
+export const verificationEmailSchema = z.object({
     email: z.email("Enter a valid email address"),
-    password: z
-        .string()
-        .min(8, "Password must be at least 8 characters")
-        .max(128, "Password must be at most 128 characters"),
+})
+
+const passwordSchema = z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .max(128, "Password must be at most 128 characters")
+
+export const signInSchema = verificationEmailSchema.extend({
+    password: passwordSchema,
 })
 
 export const signUpSchema = signInSchema.extend({
@@ -14,3 +19,4 @@ export const signUpSchema = signInSchema.extend({
 
 export type SignInValues = z.infer<typeof signInSchema>
 export type SignUpValues = z.infer<typeof signUpSchema>
+export type VerificationEmailValues = z.infer<typeof verificationEmailSchema>

@@ -11,6 +11,26 @@ type AuthButtonIconProps = {
 }
 
 export function AuthButtonIcon({ isPending, idle }: AuthButtonIconProps) {
+    if (!idle) {
+        return (
+            <AnimatePresence initial={false}>
+                {isPending && (
+                    <motion.span
+                        aria-hidden="true"
+                        data-icon="conditional"
+                        initial={{ opacity: 0, width: 0 }}
+                        animate={{ opacity: 1, width: 28 }}
+                        exit={{ opacity: 0, width: 0 }}
+                        transition={{ duration: 0.16, ease: easeOut }}
+                        className="flex shrink-0 items-center overflow-hidden"
+                    >
+                        <Spinner className="shrink-0" />
+                    </motion.span>
+                )}
+            </AnimatePresence>
+        )
+    }
+
     const content = isPending ? <Spinner /> : idle
 
     return (

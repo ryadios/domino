@@ -58,7 +58,7 @@ export function GoogleAuthButton({
             disabled={isPending}
             aria-busy={isPending}
             onClick={handleGoogleSignIn}
-            className="h-12 w-full gap-3 border-border"
+            className="h-12 w-full border-border has-data-[icon=inline-start]:pl-2.5"
         >
             <AuthButtonIcon
                 isPending={isPending}

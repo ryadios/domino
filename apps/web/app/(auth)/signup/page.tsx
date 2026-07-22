@@ -1,25 +1,18 @@
-import { AuthLayout } from "@/features/auth/components/auth-layout"
-import { SignUpForm } from "@/features/auth/components/sign-up-form"
+import { redirect } from "next/navigation"
+import { SignUpScreen } from "@/features/auth/components/sign-up-screen"
 import { getOAuthErrorMessage } from "@/features/auth/lib/errors"
+import { getServerSession } from "@/lib/auth-server"
 
 type SignUpPageProps = {
     searchParams: Promise<{ error?: string | string[] }>
 }
 
 export default async function SignUpPage({ searchParams }: SignUpPageProps) {
-    const oauthError = getOAuthErrorMessage((await searchParams).error)
+    const [params, session] = await Promise.all([
+        searchParams,
+        getServerSession(),
+    ])
+    if (session?.user.emailVerified) redirect("/")
 
-    return (
-        <AuthLayout
-            title="Get Started"
-            description="Create your account and start editing with AI"
-            imageSrc="/auth/signup.jpg"
-            alternateText="Already have an account?"
-            alternateHref="/signin"
-            alternateLabel="Sign In"
-            oauthError={oauthError}
-        >
-            <SignUpForm />
-        </AuthLayout>
-    )
+    return <SignUpScreen oauthError={getOAuthErrorMessage(params.error)} />
 }

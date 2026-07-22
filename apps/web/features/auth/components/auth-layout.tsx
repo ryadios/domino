@@ -9,12 +9,13 @@ import { GoogleAuthButton } from "./google-auth-button"
 
 type AuthLayoutProps = {
     title: string
-    description: string
+    description: ReactNode
     imageSrc: string
     alternateText: string
     alternateHref: string
     alternateLabel: string
     oauthError?: string | null
+    showGoogle?: boolean
     children: ReactNode
 }
 
@@ -26,6 +27,7 @@ export function AuthLayout({
     alternateHref,
     alternateLabel,
     oauthError,
+    showGoogle = true,
     children,
 }: AuthLayoutProps) {
     return (
@@ -54,13 +56,17 @@ export function AuthLayout({
 
                     {children}
 
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span className="h-px flex-1 bg-border" />
-                        Or continue with
-                        <span className="h-px flex-1 bg-border" />
-                    </div>
+                    {showGoogle && (
+                        <>
+                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                <span className="h-px flex-1 bg-border" />
+                                Or continue with
+                                <span className="h-px flex-1 bg-border" />
+                            </div>
 
-                    <GoogleAuthButton callbackError={oauthError} />
+                            <GoogleAuthButton callbackError={oauthError} />
+                        </>
+                    )}
 
                     <p className="text-center text-sm text-muted-foreground">
                         {alternateText}{" "}

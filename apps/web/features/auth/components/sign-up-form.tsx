@@ -2,20 +2,24 @@
 
 import { Button } from "@domino/ui/components/button"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useAnimate } from "motion/react"
-import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { authClient } from "@/lib/auth-client"
-import { easeInOut } from "@/lib/motion"
+import { useInvalidFieldNudge } from "../hooks/use-invalid-field-nudge"
 import { type SignUpValues, signUpSchema } from "../lib/schemas"
 import { AuthButtonIcon } from "./auth-button-icon"
 import { AuthInputField } from "./auth-input-field"
 import { PasswordField } from "./password-field"
 
-export function SignUpForm() {
-    const router = useRouter()
-    const [formRef, animate] = useAnimate<HTMLFormElement>()
+type SignUpFormProps = {
+    onVerificationRequired: (
+        email: string,
+        verificationRequested: boolean,
+    ) => void
+}
+
+export function SignUpForm({ onVerificationRequired }: SignUpFormProps) {
+    const { formRef, nudgeInvalidFields } = useInvalidFieldNudge<SignUpValues>()
     const {
         formState: { errors, isSubmitting },
         handleSubmit,
@@ -26,37 +30,49 @@ export function SignUpForm() {
         reValidateMode: "onChange",
         defaultValues: { email: "", name: "", password: "" },
     })
-    const submit = handleSubmit(
-        async (values) => {
-            try {
-                const result = await authClient.signUp.email(values)
+    const submit = handleSubmit(async (values) => {
+        try {
+            const result = await authClient.signUp.email({
+                ...values,
+                callbackURL: new URL("/verify-email", window.location.origin)
+                    .href,
+            })
 
-                if (result.error) {
-                    toast.error(
-                        "Unable to create your account. Please try again.",
-                    )
-                    return
-                }
-
-                router.replace("/")
-                router.refresh()
-            } catch {
-                toast.error("Unable to create your account. Please try again.")
-            }
-        },
-        (errors) => {
-            const invalidFields = Object.keys(errors)
-                .map((name) => `[name=${name}]`)
-                .join(",")
-
-            if (invalidFields)
-                void animate(
-                    invalidFields,
-                    { x: [0, -4, 3, -2, 0] },
-                    { duration: 0.24, ease: easeInOut },
+            if (result.error) {
+                toast.error(
+                    "Unable to create your account. Please try again.",
                 )
-        },
-    )
+                return
+            }
+
+            try {
+                const verification = await authClient.sendVerificationEmail({
+                    email: values.email,
+                    callbackURL: new URL(
+                        "/verify-email",
+                        window.location.origin,
+                    ).href,
+                })
+
+                onVerificationRequired(values.email, !verification.error)
+
+                if (verification.error) {
+                    toast.error(
+                        verification.error.status === 429
+                            ? "Too many attempts. Try again in a minute."
+                            : "Unable to send a verification email. Please try again.",
+                    )
+                }
+            } catch {
+                onVerificationRequired(values.email, false)
+                toast.error(
+                    "Unable to send a verification email. Please try again.",
+                )
+            }
+        } catch {
+            toast.error("Unable to create your account. Please try again.")
+        }
+    }, nudgeInvalidFields)
 
     return (
         <form

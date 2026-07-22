@@ -1,7 +1,7 @@
 const oauthErrorMessages: Record<string, string> = {
     access_denied: "Google sign-in was cancelled.",
     account_not_linked:
-        "An account already exists with this email. Use the original sign-in method.",
+        "This Google account could not be connected. Sign in using the original method.",
     no_code: "Google sign-in could not be completed. Please try again.",
     signup_disabled: "New account registration is currently unavailable.",
 }
@@ -14,4 +14,12 @@ export function getOAuthErrorMessage(error: string | string[] | undefined) {
         oauthErrorMessages[code] ??
         "Google sign-in could not be completed. Please try again."
     )
+}
+
+export function getEmailVerificationErrorMessage(
+    error: string | string[] | undefined,
+) {
+    if (!error || (Array.isArray(error) && !error[0])) return null
+
+    return "This verification link is invalid or has expired."
 }
